@@ -24,33 +24,32 @@
             <div class="input-group mb-3">
                 <input id="input-value" type="text" class="form-control" placeholder="Enter a location for Weather ...">
                 <div class="input-group-append">
-                    <button onclick="weatherStatus()" type="button" class="btn btn-danger">Search</button>
+                    <button onclick="getWeatherStatus()" type="button" class="btn btn-danger">Search</button>
                 </div>
             </div>
         </form>
         <div class="weather-status text-white text-center">
             <img id="weather-icon" src="http://openweathermap.org/img/wn/02d@2x.png" alt="">
-            <h1 id="city-name">Dhaka</h1>
-            <h3 id="temp"><span>32.06</span>&deg;C</h3>
-            <h1 id="weather">Few clouds</h1>
+            <h1 id="city-name"></h1>
+            <h3><span id="temperature"></span>&deg;C</h3>
+            <h1 id="weather-status"></h1>
         </div>
     </div>
 <script>
-    function weatherStatus(){
-        const inputValue = document.getElementById('input-value');
-        fetch('https://api.openweathermap.org/data/2.5/weather?q='+inputValue.value+'&appid=77319fe7da1f254bad237803f340ac1e&units=metric')
+    const getWeatherStatus = defaultCity => {
+        const city = document.getElementById('input-value').value || defaultCity;
+        fetch('https://api.openweathermap.org/data/2.5/weather?q='+city+'&units=metric&appid=77319fe7da1f254bad237803f340ac1e')
         .then(response => response.json())
         .then(data => {
-            const cityName = document.getElementById('city-name');
-            cityName.innerText = data.name;
-            const temperature = document.getElementById('temp');
-            temperature.innerText = data.main.temp;
-            const description = document.getElementById('weather');
-            description.innerText = data.weather[0].main;
-            const iconUrl = document.getElementById('weather-icon');
-            iconUrl.src = "https://openweathermap.org/img/wn/"+data.weather[0].icon+"@2x.png";
+            document.getElementById('city-name').innerText = data.name || "Unknown Location!";
+            document.getElementById('temperature').innerText = data.main.temp;
+            document.getElementById('weather-status').innerText = data.weather[0].main;
+            document.getElementById('weather-icon').src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+            document.getElementById('input-value').value = "";
         })
     }
+    // Default location
+    getWeatherStatus('chittagong')
 </script>
 </body>
 
